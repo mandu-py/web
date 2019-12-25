@@ -15,7 +15,7 @@ class Maildata(models.Model):
     indate = models.CharField(max_length=50)
     title = models.CharField(max_length=200)
     sender = models.CharField(max_length=100)
-    recipient = models.CharField(max_length=100)
+    recipient = models.ForeignKey('Userinfo', on_delete=models.DO_NOTHING , to_field='mailaddress', db_column='recipient')
     datedb = models.DateTimeField()
     checkdb = models.IntegerField()
 
@@ -26,7 +26,7 @@ class Maildata(models.Model):
 
 class Userinfo(models.Model):
     idx = models.AutoField(primary_key=True)
-    mailaddress = models.CharField(max_length=50)
+    mailaddress = models.CharField(max_length=100,unique=True )
     name = models.CharField(max_length=50)
 
     class Meta:
