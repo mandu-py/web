@@ -8,13 +8,41 @@
     <main class="app-content">
       <div class="app-title">
         <div>
-          <h1><i class="fa fa-th-list"></i> 세부내용</h1>
+          <h1><i class="fa fa-th-list"></i> 세부내용</h1>          
+        </div>
+        <div>
+          <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+            <button class="btn btn-primary" type="button">{{ datetext.year}}년</button>
+            <div class="btn-group" role="group">
+              <button class="btn btn-primary dropdown-toggle" id="btnGroupDrop1" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+              <div class="dropdown-menu dropdown-menu-right">
+                 {% for row in datetext.loop_year %}
+                   <a class="dropdown-item" href="/detail/{{row}}/">{{row}}년</a>
+                 {% endfor %}
+              </div>
+            </div>
+          </div>
+          <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+            <button class="btn btn-success" type="button">{{datetext.month}}월</button>
+            <div class="btn-group" role="group">
+              <button class="btn btn-success dropdown-toggle" id="btnGroupDrop2" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+              <div class="dropdown-menu dropdown-menu-right">
+                {% for row in datetext.loop_month %}
+                  <a class="dropdown-item" href="/detail/{{datetext.year}}/{{row}}">{{row}}월</a>
+                {% endfor %}
+                
+              </div>
+            </div>
+          </div>
+          
+          
           
         </div>
         <ul class="app-breadcrumb breadcrumb">
           <li class="breadcrumb-item"><i class="fa fa-th-list"></i></li>
           <li class="breadcrumb-item"><a href="#">세부내용</a></li>
-        </ul>
+                   
+        </ul>       
       </div>
 
       <div class="row">
@@ -35,7 +63,7 @@
                   {% if Maildata %}
                   {% for row in Maildata%}
                   <tr>
-                    <td>{{ row.indate }}</td>
+                    <td>{{ row.datedb | date:"Y-m"}}-{{ row.indate }}</td>
                     <td>{{ row.title }}</td>
                     <td>{{ row.sender }}</td>
                     <td>{{ row.recipient.mailaddress }}</td>
