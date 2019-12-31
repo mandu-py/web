@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from django.db.models import Count
+from django.db.models import Count,TextField
+from django.db.models.functions import Substr,Cast,ExtractYear
 from django.http import HttpResponse
 from .models import Log,Maildata,Userinfo
 from datetime import datetime
@@ -8,13 +9,32 @@ from datetime import datetime
 
 def index(request):
     data = Maildata.objects.values(
+        'datedb','recipient__mailaddress','recipient__name'
+        ).filter(datedb__contains=('%s' % datetime.now().year))
+
+    yeardata = data.values(
+        'recipient__mailaddress','recipient__name'
+        ).annotate(
+        mail_count=Count('recipient__mailaddress')
+        ).order_by('-mail_count')[:10]
+
+    monthdata = data.annotate(
+        str_month = Cast(ExtractYear('datedb'), TextField()),
+        month_count = Count(Substr('datedb',1,7))
+        ).order_by('datedb')
+
+    for row in monthdata:
+        print(row)
+
+    '''
+    data = Maildata.objects.values(
         'recipient__mailaddress','recipient__name'
         ).filter(datedb__contains=('%s' % datetime.now().year)).annotate(
             mail_count=Count('recipient__mailaddress')
         ).order_by('-mail_count')[:10]
-    for row in data:
-        print(row)
-    context = {'data':data}
+
+    '''
+    context = {'data':yeardata,'monthdata':monthdata}
     return render(request,'main.html',context)
 def detail(request):
     now = datetime.now()
@@ -36,14 +56,17 @@ def detail_year(request,year):
         'loop_year' : range(now.year,now.year-6,-1),
         'loop_month' : range(1,13),
     }
-    context = {'Maildata':data} 
-    return render(request,'detail.html',{'Maildata':data,'datetext' : datetext})
+    context = {'Maildata':data,'datetext':datetext} 
+    return render(request,'detail.html',context)
 
 
 def detail_month(request,year,month):
     now = datetime.now()
-    if str(month) == '1':
-        month = '01'
+    searchdate = datetime.strptime(str(year) + '-' + str(month), '%Y-%m')
+    if len(str(month)) == 1:
+        month = '0' + str(month)
+    
+
     data = Maildata.objects.select_related().filter(datedb__contains=('%s-%s' % (year,month)))
     datetext = {
         'year' : year,
