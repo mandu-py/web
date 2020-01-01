@@ -15,7 +15,7 @@
       <div class="row">
         <div class="col-md-6">
           <div class="tile">
-            <h3 class="tile-title">최다메일 통계</h3>
+            <h3 class="tile-title">최다메일 대상</h3>
             <div class="embed-responsive embed-responsive-16by9">
               <canvas class="embed-responsive-item" id="barChart1"></canvas>
             </div>
@@ -23,107 +23,204 @@
         </div>
         <div class="col-md-6">
             <div class="tile">
-              <h3 class="tile-title">월별 건수</h3>
+              <h3 class="tile-title">최다 열람자</h3>
               <div class="embed-responsive embed-responsive-16by9">
-                <canvas class="embed-responsive-item" id="barChart2"></canvas>
+                <canvas class="embed-responsive-item" id="barChart3"></canvas>
               </div>
             </div>  
           
         </div>
       </div>
-      
-      <div class="col-md-6">
-        <div class="tile">
-          <h3 class="tile-title">Monthly Sales</h3>
-          <div class="embed-responsive embed-responsive-16by9">
-            <canvas class="embed-responsive-item" id="lineChartDemo"></canvas>
-          </div>
-        </div>
-        
-      </div>
+	<div class="row">
+		<div class="col-md-6">
+			<div class="tile">
+				<h3 class="tile-title">차수별 건수</h3>
+					<div class="embed-responsive embed-responsive-16by9">
+						<canvas class="embed-responsive-item" id="barChart2"></canvas>
+					</div>
+			</div>
+		</div>
+
+		<div class="col-md-6">
+			<div class="tile">
+				<h3 class="tile-title">차수별 열람율</h3>
+					<div class="embed-responsive embed-responsive-16by9">
+						<canvas class="embed-responsive-item" id="lineChartDemo"></canvas>
+					</div>
+			</div>
+		</div>
+	</div>
     </main>
     
 {% endblock %}
 {% block script %}
-    <script type="text/javascript">
-      var data = {
-      	labels: [ {% for chartdata in data%} "{{ chartdata.recipient__name}}",{% endfor %}],
-      	datasets: [
-      		{
-      			label: "훈련대상건",
-      			fillColor: "rgba(220,220,220,0.2)",
-      			strokeColor: "rgba(220,220,220,1)",
-      			pointColor: "rgba(220,220,220,1)",
-      			pointStrokeColor: "#fff",
-      			pointHighlightFill: "#fff",
-      			pointHighlightStroke: "rgba(220,220,220,1)",
-      			data: [{% for chartdata in data%} "{{ chartdata.mail_count}}",{% endfor %}]
-      		},
-      		{
-      			label: "훈련메일열람건",
-      			fillColor: "rgba(151,187,205,0.2)",
-      			strokeColor: "rgba(151,187,205,1)",
-      			pointColor: "rgba(151,187,205,1)",
-      			pointStrokeColor: "#fff",
-      			pointHighlightFill: "#fff",
-      			pointHighlightStroke: "rgba(151,187,205,1)",
-      			data: [{% for chartdata in data%} "{{ chartdata.mail_count}}",{% endfor %}]
-      		}
-      	]
-      };
+	<script type="text/javascript">
+	var mc_chart = document.getElementById('barChart1');
+	var mc_data = new Chart(mc_chart,{
+		type: 'bar',
+    data: {
+        labels: [{% for chartdata in data%} "{{ chartdata.recipient__name}}",{% endfor %}],
+        datasets: [{
+            label: '# 총메일',
+            data: [{% for chartdata in data%} "{{ chartdata.mail_count}}",{% endfor %}],
+            backgroundColor: [
+				'rgba(54, 162, 235, 0.2)',
+				'rgba(54, 162, 235, 0.2)',
+				'rgba(54, 162, 235, 0.2)',
+				'rgba(54, 162, 235, 0.2)',
+				'rgba(54, 162, 235, 0.2)',
+				'rgba(54, 162, 235, 0.2)',
+				'rgba(54, 162, 235, 0.2)',
+				'rgba(54, 162, 235, 0.2)',
+				'rgba(54, 162, 235, 0.2)',
+				'rgba(54, 162, 235, 0.2)',   
+            ],
+            borderColor: [
+				'rgba(54, 162, 235, 1)',
+				'rgba(54, 162, 235, 1)',
+				'rgba(54, 162, 235, 1)',
+				'rgba(54, 162, 235, 1)',
+				'rgba(54, 162, 235, 1)',
+				'rgba(54, 162, 235, 1)',
+				'rgba(54, 162, 235, 1)',
+				'rgba(54, 162, 235, 1)',
+				'rgba(54, 162, 235, 1)',
+				'rgba(54, 162, 235, 1)',
 
-      var monthdata = {
-      	labels: [ {% for chartdata in monthdata%} "{{ chartdata.month_name}}",{% endfor %}],
-      	datasets: [
-      		{
-      			label: "총건수",
-      			fillColor: "rgba(220,220,220,0.2)",
-      			strokeColor: "rgba(220,220,220,1)",
-      			pointColor: "rgba(220,220,220,1)",
-      			pointStrokeColor: "#fff",
-      			pointHighlightFill: "#fff",
-      			pointHighlightStroke: "rgba(220,220,220,1)",
-      			data: [{% for chartdata in monthdata%} "{{ chartdata.month_count}}",{% endfor %}]
-      		},
-      		{
-      			label: "열람건수",
-      			fillColor: "rgba(151,187,205,0.2)",
-      			strokeColor: "rgba(151,187,205,1)",
-      			pointColor: "rgba(151,187,205,1)",
-      			pointStrokeColor: "#fff",
-      			pointHighlightFill: "#fff",
-      			pointHighlightStroke: "rgba(151,187,205,1)",
-      			data: [{% for chartdata in monthdata%} "{{ chartdata.month_count}}",{% endfor %}]
-      		}
-      	]
-      };
-      
+                
+            ],
+            borderWidth: 1
+		},
+		{label: '# 메일열람',
+            data: [{% for chartdata in data%} "{{ chartdata.mail_count}}",{% endfor %}],
+            backgroundColor: [
+				'rgba(255, 99, 132, 0.2)',
+				'rgba(255, 99, 132, 0.2)',
+				'rgba(255, 99, 132, 0.2)',
+				'rgba(255, 99, 132, 0.2)',
+				'rgba(255, 99, 132, 0.2)',
+				'rgba(255, 99, 132, 0.2)',
+				'rgba(255, 99, 132, 0.2)',
+				'rgba(255, 99, 132, 0.2)',
+				'rgba(255, 99, 132, 0.2)',
+				'rgba(255, 99, 132, 0.2)',   
+            ],
+            borderColor: [
+				'rgba(255, 99, 132, 1)',
+				'rgba(255, 99, 132, 1)',
+				'rgba(255, 99, 132, 1)',
+				'rgba(255, 99, 132, 1)',
+				'rgba(255, 99, 132, 1)',
+				'rgba(255, 99, 132, 1)',
+				'rgba(255, 99, 132, 1)',
+				'rgba(255, 99, 132, 1)',
+				'rgba(255, 99, 132, 1)',
+				'rgba(255, 99, 132, 1)',
+
+                
+            ],
+            borderWidth: 1
+		},
+		{label: '# 신고',
+            data: [{% for chartdata in data%} "{{ chartdata.mail_count}}",{% endfor %}],
+            backgroundColor: [
+				'rgba(255, 205, 86, 0.2)',
+				'rgba(255, 205, 86, 0.2)',
+				'rgba(255, 205, 86, 0.2)',
+				'rgba(255, 205, 86, 0.2)',
+				'rgba(255, 205, 86, 0.2)',
+				'rgba(255, 205, 86, 0.2)',
+				'rgba(255, 205, 86, 0.2)',
+				'rgba(255, 205, 86, 0.2)',
+				'rgba(255, 205, 86, 0.2)',
+				'rgba(255, 205, 86, 0.2)',   
+            ],
+            borderColor: [
+				'rgba(255, 205, 86, 1)',
+				'rgba(255, 205, 86, 1)',
+				'rgba(255, 205, 86, 1)',
+				'rgba(255, 205, 86, 1)',
+				'rgba(255, 205, 86, 1)',
+				'rgba(255, 205, 86, 1)',
+				'rgba(255, 205, 86, 1)',
+				'rgba(255, 205, 86, 1)',
+				'rgba(255, 205, 86, 1)',
+				'rgba(255, 205, 86, 1)',
+
+                
+            ],
+            borderWidth: 1
+		},
+		]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                		}
+            		}]
+        		}
+			}
+	});
+
+	var sc_chart = document.getElementById('barChart2');
+	var sc_data = new Chart(sc_chart,{
+		type: 'bar',
+    data: {
+        labels: [{% for chartdata in monthdata%} "{{ forloop.counter }}차 : {{ chartdata.d_month | date:"Y-m"}}",{% endfor %}],
+        datasets: [{
+            label: '# 총메일',
+            data: [{% for chartdata in monthdata%} "{{ chartdata.c_month}}",{% endfor %}],
+            backgroundColor: [
+			{% for chartdata in monthdata%} 'rgba(54, 162, 235, 0.2)',{% endfor %}								
+            ],
+            borderColor: [
+			{% for chartdata in monthdata%} 'rgba(54, 162, 235, 1)',{% endfor %}
+				                
+            ],
+            borderWidth: 1
+		},
+		{
+            label: '# 메일열람',
+            data: [{% for chartdata in monthdata%} "{{ chartdata.c_month}}",{% endfor %}],
+            backgroundColor: [
+			{% for chartdata in monthdata%} 'rgba(255, 99, 132, 0.2)',{% endfor %}								
+            ],
+            borderColor: [
+			{% for chartdata in monthdata%} 'rgba(255, 99, 132, 1)',{% endfor %}
+				                
+            ],
+            borderWidth: 1
+		},
+		{
+            label: '# 신고',
+            data: [{% for chartdata in monthdata%} "{{ chartdata.c_month}}",{% endfor %}],
+            backgroundColor: [
+			{% for chartdata in monthdata%} 'rgba(255, 205, 86, 0.2)',{% endfor %}								
+            ],
+            borderColor: [
+			{% for chartdata in monthdata%} 'rgba(255, 205, 86, 1)',{% endfor %}
+				                
+            ],
+            borderWidth: 1
+		},
+		]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                		}
+            		}]
+        		}
+			}
+	});
 
 
-      var pdata = [
-      	{
-      		value: 300,
-      		color: "#46BFBD",
-      		highlight: "#5AD3D1",
-      		label: "Complete"
-      	},
-      	{
-      		value: 50,
-      		color:"#F7464A",
-      		highlight: "#FF5A5E",
-      		label: "In-Progress"
-      	}
-      ]
-      
-      var ctxl = $("#lineChartDemo").get(0).getContext("2d");
-      var lineChart = new Chart(ctxl).Line(data);
-      
-      var ctxp = $("#barChart2").get(0).getContext("2d");
-      var pieChart = new Chart(ctxp).Bar(monthdata);
-
-      var ctxb = $("#barChart1").get(0).getContext("2d");
-      var barChart = new Chart(ctxb).Bar(data);
+	
     </script>
-    <!-- Google analytics script-->
+    
     
 {% endblock %}

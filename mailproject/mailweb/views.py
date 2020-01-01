@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from django.db.models import Count,TextField
-from django.db.models.functions import Substr,Cast,ExtractYear
+from django.db.models import Count,F
+from django.db.models.functions import Substr,TruncMonth,RowNumber
 from django.http import HttpResponse
 from .models import Log,Maildata,Userinfo
 from datetime import datetime
@@ -8,32 +8,27 @@ from datetime import datetime
 # Create your views here.
 
 def index(request):
+    data_month = datetime.now().year
+    data_month1 = datetime.strptime(str(data_month-1),'%Y').year
+    
+
     data = Maildata.objects.values(
         'datedb','recipient__mailaddress','recipient__name'
-        ).filter(datedb__contains=('%s' % datetime.now().year))
+        ).filter(datedb__contains=('%s' % data_month1))
 
     yeardata = data.values(
         'recipient__mailaddress','recipient__name'
         ).annotate(
         mail_count=Count('recipient__mailaddress')
         ).order_by('-mail_count')[:10]
-
-    monthdata = data.annotate(
-        str_month = Cast(ExtractYear('datedb'), TextField()),
-        month_count = Count(Substr('datedb',1,7))
-        ).order_by('datedb')
-
-    for row in monthdata:
-        print(row)
-
-    '''
-    data = Maildata.objects.values(
-        'recipient__mailaddress','recipient__name'
-        ).filter(datedb__contains=('%s' % datetime.now().year)).annotate(
-            mail_count=Count('recipient__mailaddress')
-        ).order_by('-mail_count')[:10]
-
-    '''
+    
+    monthdata = data.values(
+        'datedb'
+        ).annotate(d_month=TruncMonth('datedb'),c_month=Count('d_month')
+        ).values('c_month','d_month'
+        ).order_by('d_month')
+    
+    '''  '''
     context = {'data':yeardata,'monthdata':monthdata}
     return render(request,'main.html',context)
 def detail(request):

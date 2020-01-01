@@ -10,8 +10,8 @@ class LogAdmin(admin.ModelAdmin):
 @admin.register(Maildata)
 class MailadataAdmin(admin.ModelAdmin):
     list_display = ['idx','indate','title','sender','recipient','datedb','checkdb']
-    list_display_links = ['idx','indate','title','sender','recipient','checkdb']
-    list_filter = ['recipient','datedb']
+    list_display_links = ['idx','indate','title','sender','recipient','datedb','checkdb']
+    list_filter = ['title','datedb']
 
 @admin.register(Userinfo)
 class UserinfoAdmin(admin.ModelAdmin):
