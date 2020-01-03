@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.db.models import Count,F
+from django.db.models import Count,Case,When,IntegerField
 from django.db.models.functions import Substr,TruncMonth,RowNumber
 from django.http import HttpResponse
 from .models import Log,Maildata,Userinfo
@@ -19,7 +19,8 @@ def index(request):
     yeardata = data.values(
         'recipient__mailaddress','recipient__name'
         ).annotate(
-        mail_count=Count('recipient__mailaddress')
+        mail_count=Count('recipient__mailaddress'),o_count = Count(Case(When(openmail__gt = 1,then=1),output_field=IntegerField())),
+        p_count = Count(Case(When(openmail__gt = 2,then=1),output_field=IntegerField()))
         ).order_by('-mail_count')[:10]
     
     monthdata = data.values(
@@ -27,7 +28,16 @@ def index(request):
         ).annotate(d_month=TruncMonth('datedb'),c_month=Count('d_month')
         ).values('c_month','d_month'
         ).order_by('d_month')
+
+    opendata = data.values(
+        'recipient__name'
+        ).annotate(o_count = Count(Case(When(openmail__gt = 1,then=1),output_field=IntegerField()))
+        
+    ).order_by('-o_count')[:10]
+
     
+
+    print (yeardata)
     '''  '''
     context = {'data':yeardata,'monthdata':monthdata}
     return render(request,'main.html',context)

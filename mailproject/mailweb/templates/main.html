@@ -92,7 +92,7 @@
             borderWidth: 1
 		},
 		{label: '# 메일열람',
-            data: [{% for chartdata in data%} "{{ chartdata.mail_count}}",{% endfor %}],
+            data: [{% for chartdata in data%} "{{ chartdata.o_count}}",{% endfor %}],
             backgroundColor: [
 				'rgba(255, 99, 132, 0.2)',
 				'rgba(255, 99, 132, 0.2)',
@@ -122,7 +122,7 @@
             borderWidth: 1
 		},
 		{label: '# 신고',
-            data: [{% for chartdata in data%} "{{ chartdata.mail_count}}",{% endfor %}],
+            data: [{% for chartdata in data%} "{{ chartdata.p_count}}",{% endfor %}],
             backgroundColor: [
 				'rgba(255, 205, 86, 0.2)',
 				'rgba(255, 205, 86, 0.2)',

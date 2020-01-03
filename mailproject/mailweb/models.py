@@ -18,6 +18,7 @@ class Maildata(models.Model):
     recipient = models.ForeignKey('Userinfo', on_delete=models.DO_NOTHING , to_field='mailaddress', db_column='recipient')
     datedb = models.DateTimeField()
     checkdb = models.IntegerField()
+    openmail = models.IntegerField()
 
     class Meta:
         managed = False
