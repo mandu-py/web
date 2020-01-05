@@ -18,7 +18,15 @@ class Maildata(models.Model):
     recipient = models.ForeignKey('Userinfo', on_delete=models.DO_NOTHING , to_field='mailaddress', db_column='recipient')
     datedb = models.DateTimeField()
     checkdb = models.IntegerField()
-    openmail = models.IntegerField()
+
+    select_openmail = (
+        (1,'미열람'),
+        (2,'열람후미신고'),
+        (3,'열람후신고')
+    )
+    openmail = models.IntegerField(choices=select_openmail)
+
+    
 
     class Meta:
         managed = False
@@ -33,3 +41,5 @@ class Userinfo(models.Model):
     class Meta:
         managed = False
         db_table = 'userinfo'
+
+
