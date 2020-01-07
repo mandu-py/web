@@ -43,3 +43,26 @@ class Userinfo(models.Model):
         db_table = 'userinfo'
 
 
+class Remote(models.Model):
+    idx = models.AutoField(primary_key=True)
+    start_time = models.DateTimeField(blank=True, null=True)
+    end_time = models.DateTimeField(blank=True, null=True)
+    local_ip = models.CharField(max_length=50, blank=True, null=True)
+    remote_ip = models.ForeignKey('RetmoeUser', on_delete=models.DO_NOTHING , to_field='user_ip', db_column='remote_ip')
+    system_text = models.TextField(blank=True, null=True)
+    
+    class Meta:
+        managed = False
+        db_table = 'remote'
+
+
+class RetmoeUser(models.Model):
+    idx = models.AutoField(primary_key=True)
+    user_ip = models.CharField(max_length=50,unique=True)
+    user_name = models.CharField(max_length=200)
+    user_system = models.CharField(max_length=50)
+
+    class Meta:
+        managed = False
+        db_table = 'retmoe_user'
+
