@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.db.models import Count,Case,When,IntegerField,F
 from django.db.models.functions import Substr,TruncMonth,RowNumber
 from django.http import HttpResponse
-from .models import Log,Maildata,Userinfo
+from .models import Log,Maildata,Userinfo,Remote,RetmoeUser
 from datetime import datetime
 
 # Create your views here.
@@ -73,6 +73,7 @@ def detail(request):
 def detail_year(request,year):
     now = datetime.now()
     data = Maildata.objects.select_related().filter(datedb__year = year)
+    
     monthcount = getcount(year)
     datetext = {
         'year' : year,
@@ -104,9 +105,6 @@ def detail_month(request,year,month):
     context = {'Maildata':data,'datetext' : datetext} 
     return render(request,'detail.html',context)
 
-
-
-
 ''' # 월별 차수 구하기 '''
 def getcount(data_month1):
             month_count = Maildata.objects.values(
@@ -116,6 +114,31 @@ def getcount(data_month1):
             return month_count
 
 ''' # 월별 차수 데이터 호출 '''
+
+def remote(request):
+    now = datetime.now()
+    context = ''
+    return render(request,'remote.html',context)
+
+def remote_detail(request):
+    now = datetime.now()
+    return re_detail_month(request,now.year,now.month)
+
+def re_detail_month(request,year,month):
+    data = Remote.objects.select_related().filter(start_time__year = year,start_time__month = month)
+    now = datetime.now()
+    datetext = {
+        'year' : year,
+        'month' : month,
+        'loop_year' : range(now.year,now.year-6,-1),
+        'loop_month' : range(1,13),
+    }
+    
+    context = {'Remotedata':data,'datetext':datetext}
+    return render(request,'remote_detail.html',context)
+
+
+
 
 
 

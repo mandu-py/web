@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block csspath %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/buttons.dataTables.min.css'%}">
+{% endblock %}
+{% block content %}
+    <main class="app-content">
+      <div class="app-title">
+        <div>
+          <h1><i class="fa fa-th-list"></i> 세부내용</h1>          
+        </div>
+        <div>
+          <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+            <button class="btn btn-primary" type="button">{{ datetext.year}}년</button>
+            <div class="btn-group" role="group">
+              <button class="btn btn-primary dropdown-toggle" id="btnGroupDrop1" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+              <div class="dropdown-menu dropdown-menu-right">
+                 {% for row in datetext.loop_year %}
+                   <a class="dropdown-item" href="/remote/detail/{{row}}/">{{row}}년</a>
+                 {% endfor %}
+              </div>
+            </div>
+          </div>
+          <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+            <button class="btn btn-success" type="button">{{datetext.month}}월</button>
+            <div class="btn-group" role="group">
+              <button class="btn btn-success dropdown-toggle" id="btnGroupDrop2" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+              <div class="dropdown-menu dropdown-menu-right">
+                {% for row in datetext.loop_month %}
+                  <a class="dropdown-item" href="/remote/detail/{{datetext.year}}/{{row}}">{{row}}월</a>
+                {% endfor %}
+                
+              </div>
+            </div>
+          </div>
+          
+          
+          
+        </div>
+        <ul class="app-breadcrumb breadcrumb">
+          <li class="breadcrumb-item"><i class="fa fa-th-list"></i></li>
+          <li class="breadcrumb-item"><a href="#">세부내용</a></li>
+                   
+        </ul>       
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="tile">
+            <div class="tile-body">
+              <table class="table table-hover table-bordered" id="sampleTable">
+                <thead>
+                  <tr>
+                    <th>원격일자</th>
+                    <th>시작시간</th>
+                    <th>종료시간</th>
+                    <th>요청자IP</th>
+                    <th>원격지IP</th>
+                    <th>원격지원업체</th>
+                    <th>원격지원시스템</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% if Remotedata %}
+                  {% for row in Remotedata%}
+                  <tr>
+                    <td>{{ row.start_time | date:"Y-m"}}</td>
+                    <td>{{ row.start_time | date:"H:i:s" }}</td>
+                    <td>{{ row.end_time | date:"H:i:s" }}</td>
+                    <td>{{ row.local_ip }} </td>
+                    <td>{{ row.remote_ip.user_ip }}</td>
+                    <td>{{ row.remote_ip.user_name }}</td>
+                    <td>{{ row.remote_ip.user_system}}</td>
+                    
+
+                  </tr>
+                  {% endfor %}
+                  {% else %}
+                    <tr>
+                      <td colspan="5">자료가 없습니다.</td>
+                    </tr>
+                  {% endif %}
+                 
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+      
+    </main>
+    
+{% endblock %}
+{% block script %}
+<script type="text/javascript" src="{% static 'js/plugins/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/plugins/dataTables.bootstrap.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/plugins/dataTables.buttons.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/plugins/buttons.html5.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/plugins/jszip.min.js' %}"></script>
+
+
+<script type="text/javascript">$(document).ready(function() {
+  $('#sampleTable').DataTable( {
+    dom: 'Blfrtip',
+        buttons: [
+            'excelHtml5'
+        ],
+        "language": {
+        "emptyTable": "데이터가 없어요.",
+        "lengthMenu": "페이지당 _MENU_ 개씩 보기",
+        "info": "현재 _START_ - _END_ / _TOTAL_건",
+        "infoEmpty": "데이터 없음",
+        "infoFiltered": "( _MAX_건의 데이터에서 필터링됨 )",
+        "search": "검색: ",
+        "zeroRecords": "일치하는 데이터가 없어요.",
+        "loadingRecords": "로딩중...",
+        "processing":     "잠시만 기다려 주세요...",
+        "paginate": {
+            "next": "다음",
+            "previous": "이전"
+        }
+    },
+  } );
+} );</script>
+
+
+
+
+<!--
+<script type="text/javascript">$('#sampleTable').DataTable();</script>
+-->
+{% endblock %}
