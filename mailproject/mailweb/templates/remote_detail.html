@@ -70,6 +70,11 @@
                     <td>{{ row.remote_ip.user_ip }}</td>
                     <td>{{ row.remote_ip.user_name }}</td>
                     <td>{{ row.remote_ip.user_system}}</td>
+                    {% if row.system_text == None %}
+                    <td><button type="button" onclick="window.open('http://10.100.8.190:40000')">입력하기</button></td>
+                    {%  else %}
+                    <td>{{ row.system_text}}</td>
+                    {% endif %}
                     
 
                   </tr>
