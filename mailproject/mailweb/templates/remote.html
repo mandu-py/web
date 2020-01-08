@@ -1,0 +1,361 @@
+{% extends "base.html" %}
+{% block content %}
+    <main class="app-content">
+      <div class="app-title">
+        <div>
+          <h1><i class="fa fa-dashboard"></i> 원격통계화면</h1>        
+		</div>
+		<div>
+			<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+			  <button class="btn btn-primary" type="button">{{ datetext.year}}년</button>
+			  <div class="btn-group" role="group">
+				<button class="btn btn-primary dropdown-toggle" id="btnGroupDrop1" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+				<div class="dropdown-menu dropdown-menu-right">
+				   {% for row in datetext.loop_year %}
+					 <a class="dropdown-item" href="/{{row}}/">{{row}}년</a>
+				   {% endfor %}
+				</div>
+			  </div>
+			</div>
+			
+				
+		  </div>
+        <ul class="app-breadcrumb breadcrumb">
+          <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+          <li class="breadcrumb-item"><a href="#">메인화면</a></li>
+        </ul>
+      </div>
+    
+      <div class="row">
+        <div class="col-md-6">
+          <div class="tile">
+            <h3 class="tile-title">최다원격지원 시스템</h3>
+            <div class="embed-responsive embed-responsive-16by9">
+              <canvas class="embed-responsive-item" id="barChart1"></canvas>
+            </div>
+          </div>  
+        </div>
+        <div class="col-md-6">
+            <div class="tile">
+              <h3 class="tile-title">월별원격지원 시스템</h3>
+              <div class="embed-responsive embed-responsive-16by9">
+                <canvas class="embed-responsive-item" id="barChart3"></canvas>
+              </div>
+            </div>  
+          
+        </div>
+      </div>
+	<div class="row">
+		<div class="col-md-6">
+			<div class="tile">
+				<h3 class="tile-title">차수별 건수</h3>
+					<div class="embed-responsive embed-responsive-16by9">
+						<canvas class="embed-responsive-item" id="barChart2"></canvas>
+					</div>
+			</div>
+		</div>
+
+		<div class="col-md-6">
+			<div class="tile">
+				<h3 class="tile-title">차수별 열람율 </h3>
+					<div class="embed-responsive embed-responsive-16by9">
+						<canvas class="embed-responsive-item" id="lineChart1"></canvas>
+					</div>
+			</div>
+		</div>
+	</div>
+	
+    </main>
+    
+{% endblock %}
+{% block script %}
+	<script type="text/javascript">
+	var mc_chart = document.getElementById('barChart1');
+	var mc_data = new Chart(mc_chart,{
+		type: 'bar',
+    data: {
+        labels: [{% for chartdata in data%} "{{ chartdata.remote_ip__user_system}}",{% endfor %}],
+        datasets: [{
+            label: '# 지원건수',
+            data: [{% for chartdata in data%} "{{ chartdata.c_system}}",{% endfor %}],
+            backgroundColor: [
+				'rgba(54, 162, 235, 0.2)',
+				'rgba(54, 162, 235, 0.2)',
+				'rgba(54, 162, 235, 0.2)',
+				'rgba(54, 162, 235, 0.2)',
+				'rgba(54, 162, 235, 0.2)',
+				'rgba(54, 162, 235, 0.2)',
+				'rgba(54, 162, 235, 0.2)',
+				'rgba(54, 162, 235, 0.2)',
+				'rgba(54, 162, 235, 0.2)',
+				'rgba(54, 162, 235, 0.2)',   
+            ],
+            borderColor: [
+				'rgba(54, 162, 235, 1)',
+				'rgba(54, 162, 235, 1)',
+				'rgba(54, 162, 235, 1)',
+				'rgba(54, 162, 235, 1)',
+				'rgba(54, 162, 235, 1)',
+				'rgba(54, 162, 235, 1)',
+				'rgba(54, 162, 235, 1)',
+				'rgba(54, 162, 235, 1)',
+				'rgba(54, 162, 235, 1)',
+				'rgba(54, 162, 235, 1)',                
+            ],
+            borderWidth: 1
+		},
+		
+		]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                		}
+            		}]
+        		}
+			}
+	});
+
+	var sc_chart = document.getElementById('barChart2');
+	var sc_data = new Chart(sc_chart,{
+		type: 'bar',
+    data: {
+        labels: [{% for chartdata in monthdata%} "{{ forloop.counter }}차 : {{ chartdata.d_month | date:"Y-m"}}",{% endfor %}],
+        datasets: [{
+            label: '# 총메일',
+            data: [{% for chartdata in monthdata%} "{{ chartdata.c_month}}",{% endfor %}],
+            backgroundColor: [
+			{% for chartdata in monthdata%} 'rgba(54, 162, 235, 0.2)',{% endfor %}								
+            ],
+            borderColor: [
+			{% for chartdata in monthdata%} 'rgba(54, 162, 235, 1)',{% endfor %}
+				                
+            ],
+            borderWidth: 1
+		},
+		{
+            label: '# 메일열람',
+            data: [{% for chartdata in monthdata%} "{{ chartdata.o_count}}",{% endfor %}],
+            backgroundColor: [
+			{% for chartdata in monthdata%} 'rgba(255, 99, 132, 0.2)',{% endfor %}								
+            ],
+            borderColor: [
+			{% for chartdata in monthdata%} 'rgba(255, 99, 132, 1)',{% endfor %}
+				                
+            ],
+            borderWidth: 1
+		},
+		{
+            label: '# 신고',
+            data: [{% for chartdata in monthdata%} "{{ chartdata.p_count}}",{% endfor %}],
+            backgroundColor: [
+			{% for chartdata in monthdata%} 'rgba(255, 205, 86, 0.2)',{% endfor %}								
+            ],
+            borderColor: [
+			{% for chartdata in monthdata%} 'rgba(255, 205, 86, 1)',{% endfor %}
+				                
+            ],
+            borderWidth: 1
+		},
+		]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                		}
+            		}]
+        		}
+			}
+	});
+	
+	var oc_chart = document.getElementById('barChart3');
+	var oc_data = new Chart(oc_chart,{
+		type: 'bar',
+    data: {
+        labels: [{% for chartdata in opendata%} "{{ chartdata.recipient__name }}",{% endfor %}],
+        datasets: [
+		{
+            label: '# 메일열람',
+            data: [{% for chartdata in opendata%} "{{ chartdata.o_count}}",{% endfor %}],
+            backgroundColor: [
+			{% for chartdata in opendata%} 'rgba(255, 99, 132, 0.2)',{% endfor %}								
+            ],
+            borderColor: [
+			{% for chartdata in opendata%} 'rgba(255, 99, 132, 1)',{% endfor %}
+				                
+            ],
+            borderWidth: 1
+		},
+		{
+            label: '# 신고',
+            data: [{% for chartdata in opendata%} "{{ chartdata.p_count}}",{% endfor %}],
+            backgroundColor: [
+			{% for chartdata in opendata%} 'rgba(255, 205, 86, 0.2)',{% endfor %}								
+            ],
+            borderColor: [
+			{% for chartdata in opendata%} 'rgba(255, 205, 86, 1)',{% endfor %}
+				                
+            ],
+            borderWidth: 1
+		},
+		]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                		}
+            		}]
+        		}
+			}
+	});
+	
+
+	var chat4 =  new Chart(document.getElementById("lineChart1"),{
+		"type":"line",
+		"data":{
+			"labels":[{% for chartdata in monthdata%} "{{ forloop.counter }}차 : {{ chartdata.d_month | date:"Y-m"}}",{% endfor %}],
+			"datasets":[{"label":"열람율",
+			"data":[{% for chartdata in monthdata%}{% widthratio chartdata.o_count chartdata.c_month  100 %},{% endfor %} ],
+			"fill":false,
+			"borderColor":"rgb(75, 192, 192)",
+			"lineTension":0.1}]},
+			"options":{
+			tooltips: {
+				callbacks: {
+					label: function(tooltipItem, data) {
+						var label = data.datasets[tooltipItem.datasetIndex].label || '%';
+
+						if (label) {
+							label += ': ';
+						}
+						label += (Math.round(tooltipItem.yLabel * 100) / 100) + '%';
+						
+						return label;
+								}
+							}
+						},
+			scales: { 
+			yAxes: [{ 
+					ticks: { 
+						callback: function(value, index, values) {
+                        return value+'%';
+                    }
+					} 
+					}] 
+			}}});
+			var tc_chart = document.getElementById('barChart4');
+	var tc_data = new Chart(tc_chart,{
+		type: 'horizontalBar',
+    data: {
+        labels: [{% for chartdata in titledata%} "{{ chartdata.title}}",{% endfor %}],
+        datasets: [{
+            label: '# 열람개수',
+            data: [{% for chartdata in titledata%} "{{ chartdata.o_count}}",{% endfor %}],
+            backgroundColor: [
+				'rgba(255, 99, 132, 0.2)',
+				'rgba(255, 99, 132, 0.2)',
+				'rgba(255, 99, 132, 0.2)',
+				'rgba(255, 99, 132, 0.2)',
+				'rgba(255, 99, 132, 0.2)',
+			],
+            borderColor: [
+				'rgba(255, 99, 132, 1)',
+				'rgba(255, 99, 132, 1)',
+				'rgba(255, 99, 132, 1)',
+				'rgba(255, 99, 132, 1)',
+				'rgba(255, 99, 132, 1)',
+				
+                
+            ],
+            borderWidth: 1
+		},
+		
+	
+		]
+    },
+    options: {
+        scales: {
+            xAxes: [{
+                ticks: {
+					min : 0,
+                    beginAtZero: true
+                		}
+            		}]
+        		}
+			}
+	});
+	var t_chart = document.getElementById('barChart5');
+	var t_data = new Chart(t_chart,{
+		type: 'horizontalBar',
+    data: {
+        labels: [{% for chartdata in titlecount%} "{{ chartdata.title}}",{% endfor %}],
+        datasets: [{
+            label: '# 메일제목',
+            data: [{% for chartdata in titlecount%} "{{ chartdata.t_count}}",{% endfor %}],
+            backgroundColor: [
+				'rgba(54, 162, 235, 0.2)',
+				'rgba(54, 162, 235, 0.2)',
+				'rgba(54, 162, 235, 0.2)',
+				'rgba(54, 162, 235, 0.2)',
+				'rgba(54, 162, 235, 0.2)',
+				
+            ],
+            borderColor: [
+				'rgba(54, 162, 235, 1)',
+				'rgba(54, 162, 235, 1)',
+				'rgba(54, 162, 235, 1)',
+				'rgba(54, 162, 235, 1)',
+				'rgba(54, 162, 235, 1)',
+			
+
+                
+            ],
+            borderWidth: 1
+		},
+
+		{label: '# 메일열람',
+            data: [{% for chartdata in titlecount%} "{{ chartdata.p_count}}",{% endfor %}],
+            backgroundColor: [
+				'rgba(255, 99, 132, 0.2)',
+				'rgba(255, 99, 132, 0.2)',
+				'rgba(255, 99, 132, 0.2)',
+				'rgba(255, 99, 132, 0.2)',
+				'rgba(255, 99, 132, 0.2)',
+				 
+            ],
+            borderColor: [
+				'rgba(255, 99, 132, 1)',
+				'rgba(255, 99, 132, 1)',
+				'rgba(255, 99, 132, 1)',
+				'rgba(255, 99, 132, 1)',
+				'rgba(255, 99, 132, 1)',
+				
+                
+            ],
+            borderWidth: 1
+		},
+		
+		]
+    },
+    options: {
+        scales: {
+            xAxes: [{
+                ticks: {
+                    beginAtZero: true
+                		}
+            		}]
+        		}
+			}
+	});
+
+
+    </script>
+    
+    
+{% endblock %}

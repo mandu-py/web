@@ -47,7 +47,7 @@ class Remote(models.Model):
     idx = models.AutoField(primary_key=True)
     start_time = models.DateTimeField(blank=True, null=True)
     end_time = models.DateTimeField(blank=True, null=True)
-    local_ip = models.CharField(max_length=50, blank=True, null=True)
+    local_ip = models.ForeignKey('RemoteLocal', on_delete=models.DO_NOTHING , to_field='user_ip', db_column='local_ip')
     remote_ip = models.ForeignKey('RetmoeUser', on_delete=models.DO_NOTHING , to_field='user_ip', db_column='remote_ip')
     system_text = models.TextField(blank=True, null=True)
     
@@ -65,4 +65,13 @@ class RetmoeUser(models.Model):
     class Meta:
         managed = False
         db_table = 'retmoe_user'
+
+class RemoteLocal(models.Model):
+    idx = models.AutoField(primary_key=True)
+    user_ip = models.CharField(max_length=50, blank=True, null=True, unique=True)
+    user_name = models.CharField(max_length=50, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'remote_local'
 

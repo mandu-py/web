@@ -155,6 +155,16 @@ class Remote(models.Model):
         db_table = 'remote'
 
 
+class RemoteLocal(models.Model):
+    idx = models.AutoField(primary_key=True)
+    local_ip = models.CharField(max_length=50, blank=True, null=True)
+    local_name = models.CharField(max_length=50, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'remote_local'
+
+
 class RetmoeUser(models.Model):
     idx = models.AutoField(primary_key=True)
     user_ip = models.CharField(max_length=50)

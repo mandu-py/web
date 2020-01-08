@@ -117,7 +117,13 @@ def getcount(data_month1):
 
 def remote(request):
     now = datetime.now()
-    context = ''
+    data = Remote.objects.values('remote_ip__user_system').annotate(c_system = Count('remote_ip__user_system')).order_by('-c_system')[:10]
+    datetext = {
+        'year' : now.year,
+        'loop_year' : range(now.year,now.year-6,-1),
+        'loop_month' : range(1,13),
+    }
+    context = {'data':data,'datetext':datetext}
     return render(request,'remote.html',context)
 
 def remote_detail(request):
@@ -125,7 +131,7 @@ def remote_detail(request):
     return re_detail_month(request,now.year,now.month)
 
 def re_detail_month(request,year,month):
-    data = Remote.objects.select_related().filter(start_time__year = year,start_time__month = month)
+    data = Remote.objects.select_related().filter(start_time__year = year,start_time__month = month).order_by('-start_time')
     now = datetime.now()
     datetext = {
         'year' : year,
