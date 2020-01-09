@@ -1,8 +1,9 @@
 from django.shortcuts import render
-from django.db.models import Count,Case,When,IntegerField,F
+from django.db.models import Count,Case,When
 from django.db.models.functions import Substr,TruncMonth,RowNumber
 from django.http import HttpResponse
-from .models import Log,Maildata,Userinfo,Remote,RetmoeUser
+from .forms import RemoteForm
+from .models import Log,Maildata,Userinfo,Remote,RemoteUser,RemoteLocal
 from datetime import datetime
 
 # Create your views here.
@@ -143,9 +144,22 @@ def re_detail_month(request,year,month):
     context = {'Remotedata':data,'datetext':datetext}
     return render(request,'remote_detail.html',context)
 
-
-
-
-
-
+def edit_remote(request,idx):
+    data = Remote.objects.filter(idx = idx)
+    if request.method == "POST":
+        form = RemoteForm(request.POST)
+        print(request.POST)
+        print(form)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.idx = request.idx
+            post.system_text = request.system_text
+            print(post)
+            '''post.save()'''
+            
+        return HttpResponse("ok")
+    else:     
+        context = {'data':data}
+        return render(request,'edit.html',context)
    
+    

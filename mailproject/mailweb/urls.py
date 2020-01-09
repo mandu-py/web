@@ -12,5 +12,6 @@ urlpatterns = [
     path('remote/',views.remote,name='remote'),
     path('remote/detail/',views.remote_detail,name ='remote_detail'),
     path('remote/detail/<int:year>/<int:month>/',views.re_detail_month,name ='re_detail_month'),
+    path('remote/edit/<int:idx>/',views.edit_remote,name ='edit_remote'),
 ]
 
