@@ -28,22 +28,22 @@ def index_year(request,year):
     yeardata = data.values(
         'recipient__mailaddress','recipient__name'
         ).annotate(
-        mail_count=Count('recipient__mailaddress'),o_count = Count(Case(When(openmail__gt = 1,then=1),output_field=IntegerField())),
-        p_count = Count(Case(When(openmail__gt = 2,then=1),output_field=IntegerField()))
+        mail_count=Count('recipient__mailaddress'),o_count = Count(Case(When(openmail__gt = 1,then=1))),
+        p_count = Count(Case(When(openmail__gt = 2,then=1)))
         ).order_by('-mail_count')[:10]
     
     monthdata = data.values(
         'datedb'
-        ).annotate(d_month=TruncMonth('datedb'),c_month=Count('d_month'),o_count = Count(Case(When(openmail__gt = 1,then=1),output_field=IntegerField())),
-        p_count = Count(Case(When(openmail__gt = 2,then=1),output_field=IntegerField()))
+        ).annotate(d_month=TruncMonth('datedb'),c_month=Count('d_month'),o_count = Count(Case(When(openmail__gt = 1,then=1))),
+        p_count = Count(Case(When(openmail__gt = 2,then=1)))
         ).values('c_month','d_month','o_count','p_count'
         ).order_by('d_month')
 
     
     opendata = data.values(
         'recipient__name'
-        ).annotate(o_count = Count(Case(When(openmail__gt = 1,then=1),output_field=IntegerField())),
-        p_count = Count(Case(When(openmail__gt = 2,then=1),output_field=IntegerField()))       
+        ).annotate(o_count = Count(Case(When(openmail__gt = 1,then=1))),
+        p_count = Count(Case(When(openmail__gt = 2,then=1)))       
     ).order_by('-o_count')[:10]
 
     titledata = data.filter(openmail__gt = 1).values(
@@ -54,7 +54,7 @@ def index_year(request,year):
     '''  '''
     titlecount = data.values(
         'title'
-    ).annotate(t_count = Count('title'),p_count = Count(Case(When(openmail__gt = 1,then=1),output_field=IntegerField()))).order_by('-t_count')[:5]
+    ).annotate(t_count = Count('title'),p_count = Count(Case(When(openmail__gt = 1,then=1)))).order_by('-t_count')[:5]
 
     
 
@@ -118,6 +118,7 @@ def getcount(data_month1):
 
 def remote(request):
     now = datetime.now()
+    Maindata = Remote.objects.filter(start_time__year=)
     data = Remote.objects.values('remote_ip__user_system').annotate(c_system = Count('remote_ip__user_system')).order_by('-c_system')[:10]
     datetext = {
         'year' : now.year,
@@ -145,18 +146,20 @@ def re_detail_month(request,year,month):
     return render(request,'remote_detail.html',context)
 
 def edit_remote(request,idx):
-    data = Remote.objects.filter(idx = idx)
+    data = Remote.objects.filter(idx = idx)[0]
+    
     if request.method == "POST":
         form = RemoteForm(request.POST)
-        print(request.POST)
-        print(form)
-        if form.is_valid():
+        print(form['start_time'])
+        if form.is_valid():           
             post = form.save(commit=False)
-            post.idx = request.idx
-            post.system_text = request.system_text
-            print(post)
-            '''post.save()'''
-            
+            post.idx = data.idx
+            post.start_time = data.start_time
+            post.end_time = data.end_time
+            post.local_ip = data.local_ip
+            post.remote_ip = data.remote_ip
+            post.system_text = request.POST["system_text"]
+            post.save()
         return HttpResponse("ok")
     else:     
         context = {'data':data}

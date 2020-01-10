@@ -22,37 +22,41 @@
             <div class="tile-body">
               <form id="edit_remote" method="POST" class="post-form">
                 {% csrf_token %}
-                {% for row in data%}
+                
                 <div class="form-group">
-                  <input class="form-control" name='idx' type="hidden" value="{{row.idx}}">
+                  <input class="form-control" id='idx' name='idx' type="hidden" value="{{data.idx}}">
+                  <input class="form-control" id='start_time' name='start_time' type="hidden" value="{{ data.start_time | date:"Y-m-d H:i:s" }}">
+                  <input class="form-control" id='end_time' name='end_time' type="hidden" value="{{ data.end_time | date:"Y-m-d H:i:s" }}">
+                  <input class="form-control" id='local_ip' name='local_ip' type="hidden" value="{{data.local_ip.user_ip}}">
+                  <input class="form-control" id='remote_ip' name='remote_ip' type="hidden" value="{{ data.remote_ip.user_ip }}">                 
                 </div>
                 <div class="form-group">
                   <label class="control-label">원격일자</label>
-                  <input class="form-control" type="text" placeholder="{{ row.start_time | date:"Y-m-d" }}" disabled="">
+                  <input class="form-control" type="text" placeholder="{{ data.start_time | date:"Y-m-d" }}" disabled="">
                 </div>
                 <div class="form-group">
                   <label class="control-label">시작시간</label>
-                  <input class="form-control" type="text" placeholder="{{ row.start_time | date:"H:i:s" }}" disabled="">
+                  <input class="form-control" type="text" placeholder="{{ data.start_time | date:"H:i:s" }}" disabled="">
                 </div>
                 <div class="form-group">
                   <label class="control-label">종료시간</label>
-                  <input class="form-control" type="text" placeholder="{{ row.end_time | date:"H:i:s" }}" disabled="">
+                  <input class="form-control" type="text" placeholder="{{ data.end_time | date:"H:i:s" }}" disabled="">
                 </div>
                 <div class="form-group">
                   <label class="control-label">요청지</label>
-                  <input class="form-control" type="text" placeholder="{{ row.local_ip.user_name}}" disabled="">
+                  <input class="form-control" type="text" placeholder="{{ data.local_ip.user_name}}" disabled="">
                 </div>
                 <div class="form-group">
                   <label class="control-label">원격지원IP</label>
-                  <input class="form-control" type="text" placeholder="{{ row.remote_ip.user_ip }}" disabled="">
+                  <input class="form-control" type="text" placeholder="{{ data.remote_ip.user_ip }}" disabled="">
                 </div>
                 <div class="form-group">
                   <label class="control-label">원격지원업체</label>
-                  <input class="form-control" type="text" placeholder="{{ row.remote_ip.user_name }}" disabled="">
+                  <input class="form-control" type="text" placeholder="{{ data.remote_ip.user_name }}" disabled="">
                 </div>
                 <div class="form-group">
                   <label class="control-label">원격지원시스템</label>
-                  <input class="form-control" type="text" placeholder="{{ row.remote_ip.user_system }}" disabled="">
+                  <input class="form-control" type="text" placeholder="{{ data.remote_ip.user_system }}" disabled="">
                 </div>
                 <div class="form-group">
                   <label class="control-label">원격내용</label>
@@ -60,10 +64,8 @@
                 </div>
                 
               </form>
-            </div>
-            {% endfor %}
-            <div class="tile-footer">
-              
+            </div>            
+            <div class="tile-footer">              
               <button class="btn btn-primary" type="button" onclick="pclose1()"><i class="fa fa-fw fa-lg fa-check-circle"></i>등록하기</button>
             </div>
           </div>
