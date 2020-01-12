@@ -58,7 +58,7 @@ class Remote(models.Model):
 
 class RemoteUser(models.Model):
     idx = models.AutoField(primary_key=True)
-    user_ip = models.CharField(max_length=50,unique=True)
+    user_ip = models.CharField(max_length=50,blank=True,null=True,unique=True)
     user_name = models.CharField(max_length=200)
     user_system = models.CharField(max_length=50)
 

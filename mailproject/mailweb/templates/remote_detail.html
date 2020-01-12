@@ -66,12 +66,22 @@
                     <td>{{ row.start_time | date:"Y-m-d"}}</td>
                     <td>{{ row.start_time | date:"H:i:s" }}</td>
                     <td>{{ row.end_time | date:"H:i:s" }}</td>
+                    {% if row.local_ip.user_name == None %}
+                    <td><button class="btn btn-primary" type="button" onclick="window.open('{% url 'edit_local' row.local_ip.idx %}','window_name','width=600,height=400,location=no,status=no,scrollbars=yes')">입력하기</button></td>
+                    {%  else %}
                     <td>{{ row.local_ip.user_name}}</td>
+                    {% endif %}  
+                    
                     <td>{{ row.remote_ip.user_ip }}</td>
+                    {% if row.remote_ip.user_name == None %}
+                    <td><button class="btn btn-primary" type="button" onclick="window.open('{% url 'edit_remoteuser' row.remote_ip.idx %}','window_name','width=600,height=400,location=no,status=no,scrollbars=yes')">입력하기</button></td>
+                    {%  else %}
                     <td>{{ row.remote_ip.user_name }}</td>
+                    {% endif %} 
+                    
                     <td>{{ row.remote_ip.user_system}}</td>
                     {% if row.system_text == None %}
-                    <td><button class="btn btn-primary" type="button" onclick="window.open('/remote/edit/{{ row.idx }}/','window_name','width=600,height=900,location=no,status=no,scrollbars=yes')">입력하기</button></td>
+                    <td><button class="btn btn-primary" type="button" onclick="window.open('{% url 'edit_remote' row.idx %}','window_name','width=600,height=900,location=no,status=no,scrollbars=yes')">입력하기</button></td>
                     {%  else %}
                     <td>{{ row.system_text}}</td>
                     {% endif %}                    

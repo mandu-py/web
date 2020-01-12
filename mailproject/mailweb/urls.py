@@ -13,5 +13,8 @@ urlpatterns = [
     path('remote/detail/',views.remote_detail,name ='remote_detail'),
     path('remote/detail/<int:year>/<int:month>/',views.re_detail_month,name ='re_detail_month'),
     path('remote/edit/<int:idx>/',views.edit_remote,name ='edit_remote'),
+    path('remote/edit/local/<int:idx>/',views.edit_remotelocal,name = 'edit_local'),
+    path('remote/edit/remoteuser/<int:idx>/',views.edit_remoteuser,name = 'edit_remoteuser'),
 ]
+
 

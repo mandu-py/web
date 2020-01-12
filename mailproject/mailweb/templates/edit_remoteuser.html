@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta name="description" content="Vali is a responsive and free admin theme built with Bootstrap 4, SASS and PUG.js. It's fully customizable and modular.">
+    <!-- Main CSS-->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css'%}">
+    <!-- Font-icon css-->
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  </head>
+  <body class="app sidebar-mini rtl">
+    <!-- Navbar-->
+    <header class="app-header"><a class="app-header__logo" href="#">Edit</a>
+     
+    </header>
+    <!-- Sidebar menu-->
+
+    <main class="app-content">
+      <div class="row">
+        <div class="col-md-5">
+          <div class="tile">
+            <div class="tile-body">
+              <form id="edit_remote" method="POST" class="post-form">
+                {% csrf_token %}
+
+                <div class="form-group">
+                  <label class="control-label">IP정보</label>
+                  <input class="form-control" type="text" placeholder="{{ data.user_ip }}" disabled="">
+                </div>
+                <div class="form-group">
+                  <label class="control-label">업체명</label>
+                  <input id="user_name" name="user_name" class="form-control" type="text">
+                </div>
+                <div class="form-group">
+                  <label class="control-label">시스템명</label>
+                  <input id="user_system" name="user_system"" class="form-control" type="text" required>
+                </div>
+                </form>
+            <div class="tile-footer">
+              
+              <button class="btn btn-primary" type="button" onclick="pclose1()"><i class="fa fa-fw fa-lg fa-check-circle"></i>등록하기</button>
+            </div>
+          
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+      
+      
+      
+    </main>
+    <script language="javascript">
+      function pclose1(){
+          var user_system = document.getElementById("user_system").value;
+          var user_name = document.getElementById("user_name").value;
+          if(user_system.trim() == "" || user_name.trim() == ""){
+            alert("값을입력하세요")
+          }
+          else{
+            
+            document.getElementById('edit_remote').submit();
+            alert("종료")
+            opener.location.reload();
+            window.close();
+          }
+          
+          
+      }
+      </script>
+      
+  </body>
+</html>

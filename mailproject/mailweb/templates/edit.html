@@ -60,7 +60,7 @@
                 </div>
                 <div class="form-group">
                   <label class="control-label">원격내용</label>
-                  <input id="system_text" name="system_text" class="form-control" type="text">
+                  <input id="system_text" name="system_text" class="form-control" type="text" required>
                 </div>
                 
               </form>
@@ -78,7 +78,7 @@
     <script language="javascript">
       function pclose1(){
           var system_text = document.getElementById("system_text").value;
-          if(!system_text){
+          if(system_text.trim() == ""){
             alert("값을입력하세요")
           }
           else{ 

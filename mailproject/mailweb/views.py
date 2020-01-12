@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.db.models import Count,Case,When
 from django.db.models.functions import Substr,TruncMonth,RowNumber
 from django.http import HttpResponse
-from .forms import RemoteForm
+from .forms import RemoteForm,RemoteLocalForm,RemoteUserForm
 from .models import Log,Maildata,Userinfo,Remote,RemoteUser,RemoteLocal
 from datetime import datetime
 
@@ -118,14 +118,21 @@ def getcount(data_month1):
 
 def remote(request):
     now = datetime.now()
-    Maindata = Remote.objects.filter(start_time__year=)
-    data = Remote.objects.values('remote_ip__user_system').annotate(c_system = Count('remote_ip__user_system')).order_by('-c_system')[:10]
+    Maindata = Remote.objects.filter(start_time__year=now.year)
+    data = Maindata.values('remote_ip__user_system').annotate(c_system = Count('remote_ip__user_system')).order_by('-c_system')[:10]
+
+    
+    monthdata = Maindata.values('remote_ip__user_system').annotate(
+        d_month=TruncMonth('start_time'),c_count = Count('d_month')
+    ).values('remote_ip__user_system','c_count','d_month')
+
     datetext = {
         'year' : now.year,
         'loop_year' : range(now.year,now.year-6,-1),
         'loop_month' : range(1,13),
     }
     context = {'data':data,'datetext':datetext}
+    print(monthdata)
     return render(request,'remote.html',context)
 
 def remote_detail(request):
@@ -150,7 +157,7 @@ def edit_remote(request,idx):
     
     if request.method == "POST":
         form = RemoteForm(request.POST)
-        print(form['start_time'])
+        
         if form.is_valid():           
             post = form.save(commit=False)
             post.idx = data.idx
@@ -165,4 +172,45 @@ def edit_remote(request,idx):
         context = {'data':data}
         return render(request,'edit.html',context)
    
+
+def edit_remotelocal(request,idx):
+    data = RemoteLocal.objects.filter(idx = idx)[0]
+
+    if request.method == "POST":
+        form = RemoteLocalForm(request.POST)
+        print(form)
+       
+        if form.is_valid():           
+            post = form.save(commit=False)
+            post.idx = data.idx
+            post.user_ip = data.user_ip
+            post.user_name = request.POST["user_name"]
+            post.save()
+        return HttpResponse("ok")
+    else:     
+        context = {'data':data}
+        return render(request,'edit_remotelocal.html',context)
+
+
+def edit_remoteuser(request,idx):
+    data = RemoteUser.objects.filter(idx = idx)[0]
+    
+    if request.method == "POST":
+        form = RemoteUserForm(request.POST)
+        print(form)
+        print(form.is_valid())
+        
+        if form.is_valid():           
+            post = form.save(commit=False)
+            post.idx = data.idx
+            post.user_ip = data.user_ip
+            post.user_name = request.POST["user_name"]
+            post.user_system = request.POST["user_system"]
+            print(request.POST["user_name"])
+            post.save()
+        return HttpResponse("ok")
+    else:     
+        
+        context = {'data':data}
+        return render(request,'edit_remoteuser.html',context)
     
